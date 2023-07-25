@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.88c444d2.css",
-    "main.js": "/static/js/main.e5717b66.js",
+    "main.js": "/static/js/main.21d76cba.js",
     "static/media/NurseState.csv": "/static/media/NurseState.c1322465e7003cd1922e.csv",
     "static/media/BedState.csv": "/static/media/BedState.8efc76a9e876c2ccbda7.csv",
     "static/media/ClinicianState.csv": "/static/media/ClinicianState.51271c45d599d2bc757c.csv",
@@ -12,10 +12,10 @@
     "static/media/task_count.csv": "/static/media/task_count.7c5b76c2c46252f08639.csv",
     "index.html": "/index.html",
     "main.88c444d2.css.map": "/static/css/main.88c444d2.css.map",
-    "main.e5717b66.js.map": "/static/js/main.e5717b66.js.map"
+    "main.21d76cba.js.map": "/static/js/main.21d76cba.js.map"
   },
   "entrypoints": [
     "static/css/main.88c444d2.css",
-    "static/js/main.e5717b66.js"
+    "static/js/main.21d76cba.js"
   ]
 }
