@@ -178,7 +178,7 @@ const StackedAreaChart = ({ onTaskChange }) => {
             const tooltip = d3.select(tooltipRef.current);
 
             svg.on('mousemove', function () {
-                const mouseXPosition = d3.mouse(this)[0] - 110; // Get the x-coordinate of the mouse pointer within the SVG
+                const mouseXPosition = d3.mouse(this)[0] - 105; // Get the x-coordinate of the mouse pointer within the SVG
 
                 // Constrain the mouse position within the range of the x-axis
                 const constrainedX = Math.max(0, Math.min(width, mouseXPosition));
@@ -204,7 +204,7 @@ const StackedAreaChart = ({ onTaskChange }) => {
 
                 // Show the tooltip with the x-axis value
                 tooltip
-                    .style('left', `${d3.event.pageX - 240}px `)
+                    .style('left', `${d3.event.pageX - 420}px `)
                     .style('top', -350)
                     .style('visibility', 'visible')
                     .html(`Time: ${~~xValue} tick`);

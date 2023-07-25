@@ -9,24 +9,24 @@ import PatientDataTable from './PatientDataTable';
 
 
 
-const SVG_WIDTH = 620;
+const SVG_WIDTH = 800;
 const SVG_HEIGHT = 600;
 const margin = {
     top: 90,
-    right: 40,
+    right: 190,
     bottom: 40,
     left: 40
 };
 const width = SVG_WIDTH - margin.left - margin.right;
 const height = SVG_HEIGHT - margin.top - margin.bottom;
 
-const BoxPlot = ({onPatientChange}) => {
+const BoxPlot = ({ onPatientChange }) => {
     const chartRef = useRef(null);
     const tooltipRef = useRef(null);
     const range = useContext(RangeContext);
     const selectedTask = useContext(TaskNameContext);
     const selectedSate = useContext(StateContext);
-    
+
 
 
     useEffect(() => {
@@ -239,8 +239,15 @@ const BoxPlot = ({onPatientChange}) => {
                 .attr("cx", (d) => xScale(d.date))
                 .attr("cy", (d) => yScale(d.value))
                 .attr("r", "6px")
-                .attr("fill", "#44378588");
-
+                .attr("fill", (d) => {
+                    if (d.value > maxIQR) {
+                        return "red"; // Dot is red if greater than maxIQR
+                    } else if (d.value > thirdQuartile) {
+                        return "orange"; // Dot is orange if greater than thirdQuartile but less than maxIQR
+                    } else {
+                        return "#44378588"; // Default color for the dots
+                    }
+                })
 
 
             svgContainer.selectAll(".aux-line")
@@ -288,6 +295,37 @@ const BoxPlot = ({onPatientChange}) => {
                 .attr("font-weight", "bold")
                 .style("font-size", "1rem");
 
+            const legendData = [
+                { label: "Moderate Time", color: "#44378588" },
+                { label: "Time Exceeds 75th Percentile", color: "orange" },
+                { label: "Time Exceeds MaxIQR", color: "red" },
+            ];
+
+            // Create the legend SVG group
+            const legendGroup = svgContainer.append("g")
+                .attr("class", "legend")
+                .attr("transform", `translate(${width + 10}, ${margin.top - 50})`);
+
+            // Add the legend circles and labels
+            const legendCircles = legendGroup.selectAll("circle")
+                .data(legendData)
+                .enter()
+                .append("circle")
+                .attr("cx", 0)
+                .attr("cy", (d, i) => i * 25)
+                .attr("r", "6px")
+                .attr("fill", (d) => d.color);
+
+            const legendLabels = legendGroup.selectAll("text")
+                .data(legendData)
+                .enter()
+                .append("text")
+                .attr("x", 10)
+                .attr("y", (d, i) => i * 25 + 5)
+                .attr("font-size", "0.8rem")
+                .text((d) => d.label)
+                .attr("fill", "#00000088");
+
             // Create the brush
             const brush = d3.brush()
                 .extent([[0, 0], [width, height]])
@@ -330,7 +368,7 @@ const BoxPlot = ({onPatientChange}) => {
         <div
             style={{
                 display: 'flex',
-                marginTop : '30px',
+                marginTop: '30px',
                 flexDirection: 'row', // Correct typo in flex-direction
                 justifyContent: 'start',
                 alignItems: 'center', // Add this to center contents vertically
@@ -344,7 +382,7 @@ const BoxPlot = ({onPatientChange}) => {
                 <svg className="tooltip" ref={tooltipRef}></svg>
                 {/* Add any necessary styling for the SVGs */}
             </div>
-            
+
         </div>
 
     );

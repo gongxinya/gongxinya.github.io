@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.88c444d2.css",
+    "main.js": "/static/js/main.21d76cba.js",
+    "static/media/NurseState.csv": "/static/media/NurseState.c1322465e7003cd1922e.csv",
+    "static/media/BedState.csv": "/static/media/BedState.8efc76a9e876c2ccbda7.csv",
+    "static/media/ClinicianState.csv": "/static/media/ClinicianState.51271c45d599d2bc757c.csv",
+    "static/media/NurseOccupantionRate.csv": "/static/media/NurseOccupantionRate.33174c3e1ee46d97fc4a.csv",
+    "static/media/BedOccupantionRate.csv": "/static/media/BedOccupantionRate.49007ce4c9352d19651b.csv",
+    "static/media/ClinicianOccupantionRate.csv": "/static/media/ClinicianOccupantionRate.0da21c0b5e2031e4cd94.csv",
+    "static/media/taskState_spent.csv": "/static/media/taskState_spent.7f134678f486d02d7d8e.csv",
+    "static/media/task_count.csv": "/static/media/task_count.7c5b76c2c46252f08639.csv",
+    "index.html": "/index.html",
+    "main.88c444d2.css.map": "/static/css/main.88c444d2.css.map",
+    "main.21d76cba.js.map": "/static/js/main.21d76cba.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.88c444d2.css",
+    "static/js/main.21d76cba.js"
+  ]
+}

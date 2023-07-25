@@ -42,7 +42,7 @@ const MyGraph = ({ time }) => {
         d3.csv(rawData, (d) => {
             return { date: +d.current_tick, value: +d.occupation_rate };
         }).then((data) => {
-
+            const yValue = data.find((d) => d.date === xValue).value;
 
             // Filter the data by 'current_tick' values
             const filteredData = data.filter((d) => +d.date >= range[0] && +d.date <= range[1]);
@@ -75,7 +75,7 @@ const MyGraph = ({ time }) => {
             svg.append('text')
                 .attr('x', 60) // Center the label
                 .attr('y', -10) // Position below the x-axis
-                .text(`Bed occupation rate(%)`)
+                .text(`Bed occupation ratio(%)`)
                 .style('font-size', '14px')
                 .style('font-family', 'Arial, sans-serif')
                 .style('fill', '#333')
@@ -117,6 +117,15 @@ const MyGraph = ({ time }) => {
                 .attr('stroke-width', 2)
                 .attr('stroke-dasharray', '5, 5'); // Set the dash pattern, in this case, 5px solid and 5px space
 
+                svg
+                .append('text')
+                .attr('x', x(xValue)) // Center the label
+                .attr('y', -5) // Position below the x-axis
+                .text(`Ratio: ${yValue.toFixed(2)}%`)
+                .style('font-size', '13px')
+                .style('font-family', 'serif')
+                .style('fill', 'red')
+                .attr('text-anchor', 'middle'); // Set text-anchor to 'middle' for centering
 
         });
     }, [range, selectedTask, selectedSate, time]);

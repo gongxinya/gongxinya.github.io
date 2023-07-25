@@ -45,6 +45,7 @@ const TaskTimeSpentCard = () => {
 
     useEffect(() => {
         setSelectedTask(initialSelectedTask);
+        console.log("initialSelectedTask: " + initialSelectedTask)
     }, [initialSelectedTask]);
 
     useEffect(() => {
@@ -81,7 +82,7 @@ const TaskTimeSpentCard = () => {
 
                     <Select
                         style={{ width: 200, marginBottom: '20px' }}
-                        defaultValue={initialSelectedTask}
+                        defaultValue={"Select Task"}
                         onChange={handleTaskChange}
                     >
                         <Option value="Admission">Admission</Option>
@@ -95,7 +96,7 @@ const TaskTimeSpentCard = () => {
 
                     <Select
                         style={{ width: 200, marginBottom: '20px' }}
-                        defaultValue={selectedState}
+                        defaultValue={"Select State"}
                         onChange={handleStateChange}
                     >
                         <Option value="waiting">Waiting</Option>
