@@ -1,0 +1,36 @@
+.drawer-container {
+    position: relative;
+  }
+  
+  .toggle-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .drawer-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #f8f8f8;
+    box-shadow: -1px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .drawer-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .drawer-content li {
+    margin-bottom: 10px;
+  }
+  

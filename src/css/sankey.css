@@ -1,0 +1,43 @@
+/* styles.css */
+
+.links path {
+    opacity: 0.8;
+}
+
+.nodes text {
+    font-family: sans-serif;
+    font-size: 10pt !important;
+}
+
+.node-body {
+  fill: #bbb;
+  stroke: black;
+  stroke-width: 0.5px;
+}
+
+.thin-sankey .node line {
+  stroke: black;
+}
+
+.slider {
+  position: relative;
+  width: 300px;
+  margin: 20px 0;
+}
+
+.slider input[type="range"] {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+.slider .gear-slider-range {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #ccc;
+  z-index: 1;
+}
+
