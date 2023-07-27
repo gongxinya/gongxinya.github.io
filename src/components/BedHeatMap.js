@@ -3,10 +3,10 @@ import { RangeContext } from '../GlobalContext';
 import * as d3 from 'd3';
 import rawData from '../data/BedState.csv';
 
-const SVG_WIDTH = 420;
+const SVG_WIDTH = 350;
 const SVG_HEIGHT = 130;
 const margin = { top: 40, right: 25, bottom: 30, left: 50 };
-const width = 400 - margin.left - margin.right;
+const width = 330 - margin.left - margin.right;
 const height = 110 - margin.top - margin.bottom;
 
 
@@ -66,8 +66,8 @@ const HeatmapChart = ({ time }) => {
             // Build color scale
             const myColor = d3
                 .scaleOrdinal()
-                .domain(["empty/clean", "occupied", "waiting", "empty/dirty"])
-                .range(["#42A5F5", "#FF5252", "#FFEB3B", "#ECEFF1"]);
+                .domain(["False", "True"])
+                .range(["#42A5F5", "#FF5252"]);
 
 
 
@@ -129,7 +129,7 @@ const HeatmapChart = ({ time }) => {
                 .attr("ry", 4)
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
-                .style("fill", d => myColor(d.state))
+                .style("fill", d => myColor(d.occupied))
                 .style("stroke-width", 4)
                 .style("stroke", "none")
                 .style("opacity", 0.8)
@@ -137,23 +137,15 @@ const HeatmapChart = ({ time }) => {
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);
 
-            // Add the title
-            svg.append('text')
-                .attr('x', width - 140)
-                .attr('y', -30)
-                .text("Current tick: " + time)
-                .style('font-size', '14px')
-                .style('font-family', 'Arial, sans-serif') // Set the font family
-                .style('font-weight', 'bold')
-                .style('fill', '#333') // Set the font color
-                .attr('alignment-baseline', 'middle');
         });
     }, [time]);
 
 
     return (
         <div>
-            <h3>Bed Allocation</h3>
+            <h3>
+                Bed Allocation <span style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'lighter'}}>(Current tick: {time})</span>
+                </h3>
             <svg width={SVG_WIDTH} height={SVG_HEIGHT} ref={svgRef}></svg>
         </div>
     );

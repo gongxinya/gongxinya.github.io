@@ -88,14 +88,22 @@ const App = () => {
 
   return (
     <RangeContext.Provider value={range}>
-      <TaskNameContext.Provider value={selectedTask}>
+    <TaskNameContext.Provider value={selectedTask}>
+    <div
+    style={{
+      paddingTop: '40px', // Add some space above the main title
+      paddingBottom: '10px', // Add some space above the main title
+      backgroundColor: '#3a86ca',
+    }}
+    >
+  
         <h1
           style={{
             textAlign: 'center',
-            marginBottom: '30px',
-            color: '#333333',
+            marginTop: '30px',
+            backgroundColor: '#3a86ca', // Change the background color of the dashboard to gray
+            color: 'white',
             textTransform: 'uppercase',
-            marginTop: '60px',
             fontSize: '36px', // Increase the font size for the heading
           }}
         >
@@ -107,11 +115,12 @@ const App = () => {
           style={{
             fontFamily: 'Arial, sans-serif',
             marginBottom: '0px',
-            backgroundColor: '#f9f9f9', // Change the background color of the dashboard
+            backgroundColor: '#3a86ca', // Change the background color of the dashboard to gray
             minHeight: '100vh',
-            padding: '20px',
+            padding: '30px',
             display: 'flex',
             flexDirection: 'row', // Make the content side-by-side
+            gap: '10px',
           }}
         >
           {/* Add the LeftColumn component */}
@@ -126,6 +135,7 @@ const App = () => {
               flex: 1, // Take the remaining space
               maxWidth: '2000px', // Set the maximum width for the right column
               margin: '0 auto', // Center the right column within the screen
+              backgroundColor: '#5e9dd4', // Change the background color of the dashboard to gray
             }}
           >
             {showSankey && (<PatientFlow/>)}
@@ -158,7 +168,9 @@ const App = () => {
         >
           <img src={SliderIcon} alt="Slider Icon" style={{ width: '100%', height: '100%' }} />
         </div>
-      </TaskNameContext.Provider>
+
+    </div>
+    </TaskNameContext.Provider>
     </RangeContext.Provider>
   );
 };

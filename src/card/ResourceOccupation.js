@@ -27,6 +27,7 @@ const ResourceOccupationCard = () => {
       }, []);
 
     useEffect(() => {
+        setValue(~~range[1]);
         setRangeMin(~~range[0]);
         setRangeMax(~~range[1]);
     },[range])

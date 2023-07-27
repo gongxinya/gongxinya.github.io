@@ -22,8 +22,7 @@ const PatientFlow = () => {
         <h2 style={{ marginBottom: '20px', color: '#333333' }}>
           Number of patients flowing between tasks
         </h2>
-        <p>Different nodes symbolize distinct tasks, while links represent the flow between these tasks. The thickness of each link corresponds to the number of people who transition between the respective tasks.</p>
-
+        <p>Different nodes symbolize distinct tasks, while links represent the flow between these tasks. The thickness of each link corresponds to the number of people who transition between the respective tasks. The height of the node represents the current number of patient.</p>
         <Sankey />
       </div>
       );

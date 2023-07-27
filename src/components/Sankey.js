@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Select, Tooltip, Button } from 'antd';
+import { QuestionCircleTwoTone } from '@ant-design/icons';
 import { RangeContext } from '../GlobalContext';
 import * as d3 from 'd3';
 import { sankey, sankeyDiagram } from '../bundle/d3-sankey-diagram.min.js';
 import tickData from '../data/task_transfer_counts.json';
+
+import PlayButton from './PlayButton';
 
 const SankeyDiagram = () => {
   const diagramRef = useRef(null);
@@ -10,40 +14,81 @@ const SankeyDiagram = () => {
   const range = useContext(RangeContext);
   const [linkData, setLinkData] = useState({}); // State variable for linkData
 
+  // Add state variables for the play button and tick index
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [tickIndex, setTickIndex] = useState(~~range[0]);
+  const [startTick, setStartTick] = useState(range[0]);
+  const [endTick, setEndTick] = useState(range[1]);
 
   useEffect(() => {
-    // Update linkData whenever the range changes
-    const countTicksInRange = (startTick, endTick, tickData) => {
-      const categoryCounts = {};
+    document.documentElement.scrollTop = document.documentElement.clientHeight;
+    document.documentElement.scrollLeft = document.documentElement.clientWidth;
+  }, []);
 
-      for (const category in tickData) {
-        let count = 0;
-        const categoryData = tickData[category];
+  // Function to start or pause the animation
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
 
-        for (const tick in categoryData) {
-          if (tick >= startTick && tick <= endTick) {
-            count += categoryData[tick];
-          }
-        }
-        categoryCounts[category] = count;
-      }
+  // Function to update the tick index and startTick/endTick
+  const updateTick = () => {
+    if (!isPlaying) {
+      setEndTick(range[1])
+      return;
+    }
+    if (tickIndex >= range[1]) {
+      // Stop the animation when reaching the end of the data
+      setIsPlaying(false);
+    } else if (tickIndex <= range[0]) {
+      setTickIndex(range[0]);
+      setEndTick(tickIndex);
+      setTickIndex((prevIndex) => prevIndex + 50);
+    } else {
+      setEndTick(tickIndex);
+      setTickIndex((prevIndex) => prevIndex + 50);
+    }
+  };
 
-      return categoryCounts;
-    };
 
-    const newLinkData = countTicksInRange(range[0], range[1], tickData);
-    console.log(newLinkData);
+
+  // Add a new useEffect to handle the animation
+  useEffect(() => {
+    console.log("tickIndex: " + tickIndex)
+    const interval = setInterval(updateTick, 1000); // Adjust the interval as needed
+    return () => clearInterval(interval);
+  }, [isPlaying, tickIndex]);
+
+  // Update linkData based on the startTick and endTick
+  useEffect(() => {
+    console.log("startTick: " + startTick + "endTick: " + endTick)
+    const newLinkData = countTicksInRange(startTick, endTick, tickData);
+    setLinkData(newLinkData);
+  }, [endTick]);
+
+
+  // Update linkData based on the startTick and endTick
+  useEffect(() => {
+    setStartTick(range[0]);
+    if (!isPlaying || tickIndex > range[1]) {
+      setTickIndex(range[0])
+    } else if (tickIndex < range[0]) {
+      setTickIndex(range[0])
+    }
+    console.log("startTick: " + startTick + "endTick: " + endTick)
+    const newLinkData = countTicksInRange(startTick, endTick, tickData);
     setLinkData(newLinkData);
   }, [range]);
 
   useEffect(() => {
     d3.select(diagramRef.current).select('svg').remove();
+    // Remove the old legend before rendering the new one
+    d3.select(diagramRef.current).select('.legend').remove();
     const renderSankeyDiagram = () => {
       // Set up SVG
       const svg = d3.select(diagramRef.current);
 
       const layout = sankey()
-        .linkValue((d) => d.value || 1)
+        .linkValue((d) => Math.round(d.value) || 1)
         .nodeWidth(30)
         .extent([[100, 80], [1200, 480]]);
 
@@ -52,7 +97,7 @@ const SankeyDiagram = () => {
       // Render
       const color = d3.scaleOrdinal()
         .domain(['forward', 'backward'])
-        .range(['#007bff', '#ff7f00']);
+        .range(['#5d9dd5', '#E58E00']);
 
       const diagram = sankeyDiagram()
         .linkMinWidth(function (d) { return 0.1; })
@@ -67,14 +112,13 @@ const SankeyDiagram = () => {
 
       const legendItems = ['Forward Flow', 'Reverse Flow'];
 
-      
+
       const legendRects = legend.selectAll('rect')
-      legendRects.exit().remove();
       legendRects
         .data(legendItems)
         .enter()
         .append('rect')
-        .attr('x', 0)
+        .attr('x', 60)
         .attr('y', (d, i) => i * 25)
         .attr('width', 20)
         .attr('height', 20)
@@ -84,7 +128,7 @@ const SankeyDiagram = () => {
         .data(legendItems)
         .enter()
         .append('text')
-        .attr('x', 80)
+        .attr('x', 100)
         .attr('y', (d, i) => i * 25 + 15)
         .text((d) => d);
 
@@ -130,7 +174,7 @@ const SankeyDiagram = () => {
 
 
     function nodeValue(d) {
-      return d.value + ' patients';
+      return d.value + "P";
     }
 
     renderSankeyDiagram();
@@ -138,10 +182,41 @@ const SankeyDiagram = () => {
 
 
 
-  return <svg width="1300" height="500" ref={diagramRef}></svg>;
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Tooltip title="The Sankey Graph below only shows patient flow for the selected time frame. Click the play button to see the dynamic flow of the patient." trigger="click" placement="bottom">
+          <QuestionCircleTwoTone />
+        </Tooltip>
+        <h3 style={{ marginRight: '20px', marginLeft: '10px', fontSize: '20px', color: '#333333', fontWeight: 'bold' }}>
+        Time range: From <span style={{ backgroundColor: '#3a86ca', padding: '5px', borderRadius: '5px', color: 'white' }}>{~~startTick}</span> tick to <span style={{ backgroundColor: '#3a86ca', padding: '5px', borderRadius: '5px', color: 'white' }}>{~~endTick}</span> tick
+      </h3>
+        <PlayButton isPlaying={isPlaying} onClick={handlePlayPause} />
+      </div>
+      <svg width="1300" height="500" ref={diagramRef}></svg>
+    </div>
+  );
+
 };
 
+// Update linkData whenever the range changes
+const countTicksInRange = (startTick, endTick, tickData) => {
+  const categoryCounts = {};
 
+  for (const category in tickData) {
+    let count = 0;
+    const categoryData = tickData[category];
+
+    for (const tick in categoryData) {
+      if (tick >= startTick && tick <= endTick) {
+        count += categoryData[tick];
+      }
+    }
+    categoryCounts[category] = count;
+  }
+
+  return categoryCounts;
+};
 
 
 export default SankeyDiagram;

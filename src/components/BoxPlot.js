@@ -22,7 +22,6 @@ const height = SVG_HEIGHT - margin.top - margin.bottom;
 
 const BoxPlot = ({ onPatientChange }) => {
     const chartRef = useRef(null);
-    const tooltipRef = useRef(null);
     const range = useContext(RangeContext);
     const selectedTask = useContext(TaskNameContext);
     const selectedSate = useContext(StateContext);
@@ -53,9 +52,7 @@ const BoxPlot = ({ onPatientChange }) => {
             .attr("y", 50)
             .attr("font-size", "1rem");
 
-        const tooltip = d3.select(tooltipRef.current)
-            .attr("id", "tooltip")
-            .style("opacity", 0);
+
 
         // Read the data
         d3.csv(rawData, (d) => {
@@ -221,21 +218,6 @@ const BoxPlot = ({ onPatientChange }) => {
                 .data(filteredDate)
                 .enter()
                 .append("circle")
-                .on("mouseenter", (d) => {
-                    tooltip
-                        .style("opacity", 1)
-                        .style("left", `${d3.event.pageX + 10}px`)
-                        .style("top", `${d3.event.pageY}px`);
-
-                    tooltip.append("p")
-                        .text(`Observation Value: ${d}`);
-                })
-                .on("mouseout", () => {
-                    tooltip
-                        .style("opacity", 0)
-                        .selectAll("p")
-                        .remove();
-                })
                 .attr("cx", (d) => xScale(d.date))
                 .attr("cy", (d) => yScale(d.value))
                 .attr("r", "6px")
@@ -294,6 +276,10 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("fill", "#00000088")
                 .attr("font-weight", "bold")
                 .style("font-size", "1rem");
+
+
+
+
 
             const legendData = [
                 { label: "Moderate Time", color: "#44378588" },
@@ -364,28 +350,35 @@ const BoxPlot = ({ onPatientChange }) => {
 
 
     return (
-
         <div
             style={{
                 display: 'flex',
-                marginTop: '30px',
-                flexDirection: 'row', // Correct typo in flex-direction
+                marginTop: '10px', // Adjusted the top margin to move the chart and text closer
+                flexDirection: 'column',
                 justifyContent: 'start',
-                alignItems: 'center', // Add this to center contents vertically
-                padding: '0px', // Add some padding to the container
+                alignItems: 'center',
+                padding: '0px',
             }}
         >
             {/* Move the SVGs inside a wrapper div */}
-            <div style={{ marginRight: '0px' }}>
+            <div style={{ marginTop: '20px' }}> {/* Adjusted the top margin to move the chart closer */}
                 {/* Replace container with svg */}
                 <svg className="chart" ref={chartRef}></svg>
-                <svg className="tooltip" ref={tooltipRef}></svg>
-                {/* Add any necessary styling for the SVGs */}
             </div>
-
+            <ul style={{ textAlign: 'left', marginRight: '300px', fontFamily: 'Arial, sans-serif', fontStyle: 'italic',color: '#666666', opacity: '0.8' }}>
+            <li>Max (MaxIQR): The upper bound to identify potential outliers.</li>
+            <li>Q3 (Third Quartile): The 75th percentile of the data.</li>
+            <li>Median: The middle value of the dataset.</li>
+            <li>Q1 (First Quartile): The 25th percentile of the data.</li>
+            
+            <li>Min (MinIQR): The lower bound to identify potential outliers.</li>
+            
+        </ul>
         </div>
-
     );
+
+
+
 };
 
 export default BoxPlot;

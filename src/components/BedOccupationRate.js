@@ -42,7 +42,8 @@ const MyGraph = ({ time }) => {
         d3.csv(rawData, (d) => {
             return { date: +d.current_tick, value: +d.occupation_rate };
         }).then((data) => {
-            const yValue = data.find((d) => d.date === xValue).value;
+            const yValue = (data.find((d) => d.date === xValue)?.value || 0);
+
 
             // Filter the data by 'current_tick' values
             const filteredData = data.filter((d) => +d.date >= range[0] && +d.date <= range[1]);
@@ -120,7 +121,7 @@ const MyGraph = ({ time }) => {
                 svg
                 .append('text')
                 .attr('x', x(xValue)) // Center the label
-                .attr('y', -5) // Position below the x-axis
+                .attr('y', 0) // Position below the x-axis
                 .text(`Ratio: ${yValue.toFixed(2)}%`)
                 .style('font-size', '13px')
                 .style('font-family', 'serif')

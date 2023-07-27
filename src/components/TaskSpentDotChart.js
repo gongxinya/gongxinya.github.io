@@ -10,7 +10,7 @@ const width = 1500 - margin.left - margin.right;
 const height = 200 - margin.top - margin.bottom;
 const pointRadius = 5;
 
-const MyGraph = ({onPatientChange}) => {
+const MyGraph = ({ onPatientChange }) => {
   const graphRef = useRef(null);
   const range = useContext(RangeContext);
   const selectedTask = useContext(TaskNameContext);
@@ -47,6 +47,19 @@ const MyGraph = ({onPatientChange}) => {
       // Filter the data by 'current_tick' values
       const filteredData = data.filter((d) => +d.date >= range[0] && +d.date <= range[1]);
 
+      const filteredValue = filteredData.filter((d) => +d.value > 1);
+      const values = filteredValue.map((d) => d.value);
+      const sortedData = values.sort((a, b) => a - b);
+      const firstQuartile = d3.quantile(sortedData, 0.25);
+      const thirdQuartile = d3.quantile(sortedData, 0.75);
+      const interQuartileRange = thirdQuartile - firstQuartile;
+      const maxIQR = thirdQuartile + interQuartileRange * 1.5;
+
+      console.log("firstQuartile: " + firstQuartile);
+      console.log("thirdQuartile: " + thirdQuartile);
+      console.log("maxIQR: " + maxIQR);
+
+
       // Add X axis
       const x = d3.scaleLinear().domain(d3.extent(filteredData, (d) => d.date)).range([0, width]);
       svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x).tickSize(-5));
@@ -61,24 +74,24 @@ const MyGraph = ({onPatientChange}) => {
 
       // Add the x-axis label "Time (tick)"
       svg.append('text')
-      .attr('x', width) // Center the label
-      .attr('y', height + 20) // Position below the x-axis
-      .text('Time (tick)')
-      .style('font-size', '14px')
-      .style('font-family', 'Arial, sans-serif')
-      .style('fill', '#333')
-      .attr('text-anchor', 'middle'); // Set text-anchor to 'middle' for centering
+        .attr('x', width) // Center the label
+        .attr('y', height + 20) // Position below the x-axis
+        .text('Time (tick)')
+        .style('font-size', '14px')
+        .style('font-family', 'Arial, sans-serif')
+        .style('fill', '#333')
+        .attr('text-anchor', 'middle'); // Set text-anchor to 'middle' for centering
 
 
-   // Add the Y-axis label "Time (tick)"
-   svg.append('text')
-   .attr('x', 60) // Center the label
-   .attr('y', -10) // Position below the x-axis
-   .text(`${selectedState} time spent(tick)`)
-   .style('font-size', '14px')
-   .style('font-family', 'Arial, sans-serif')
-   .style('fill', '#333')
-   .attr('text-anchor', 'middle'); // Set text-anchor to 'middle' for centering
+      // Add the Y-axis label "Time (tick)"
+      svg.append('text')
+        .attr('x', 60) // Center the label
+        .attr('y', -10) // Position below the x-axis
+        .text(`${selectedState} time spent(tick)`)
+        .style('font-size', '14px')
+        .style('font-family', 'Arial, sans-serif')
+        .style('fill', '#333')
+        .attr('text-anchor', 'middle'); // Set text-anchor to 'middle' for centering
 
       // Set the gradient
       svg
@@ -114,7 +127,15 @@ const MyGraph = ({onPatientChange}) => {
         .attr('cx', (d) => x(d.date))
         .attr('cy', (d) => y(d.value))
         .attr('r', pointRadius)
-        .attr('fill', 'steelblue')
+        .attr("fill", (d) => {
+          if (d.value > maxIQR) {
+            return "red"; // Dot is red if greater than maxIQR
+          } else if (d.value > thirdQuartile) {
+            return "orange"; // Dot is orange if greater than thirdQuartile but less than maxIQR
+          } else {
+            return "#44378588"; // Default color for the dots
+          }
+        })
         .on('mouseover', (event, d) => {
           console.log(d.value)
           tooltip.transition().duration(200).style('opacity', 0.9);
@@ -132,7 +153,7 @@ const MyGraph = ({onPatientChange}) => {
         .append('text')
         .attr('x', -10)
         .attr('y', -30)
-        .text("Selected task: " + selectedTask + " (" + selectedState+ ")" )
+        .text("Selected task: " + selectedTask + " (" + selectedState + ")")
         .style('font-size', '16px')
         .style('font-family', 'Arial, sans-serif')
         .style('font-weight', 'bold')
@@ -141,34 +162,34 @@ const MyGraph = ({onPatientChange}) => {
 
 
 
-        // Create the brush
-        const brush = d3.brush()
+      // Create the brush
+      const brush = d3.brush()
         .extent([[0, 0], [width, height]])
         .on('end', brushed);
 
-    // Append the brush to the svgContainer
-    const brushGroup = svg.append('g')
+      // Append the brush to the svgContainer
+      const brushGroup = svg.append('g')
         .attr('class', 'brush')
         .call(brush);
 
-    function brushed() {
+      function brushed() {
         // Get the selection extent
         const selection = d3.event.selection;
 
         // If there is a selection, find the data points within the selection
         if (selection) {
-            // console.log(selection);
-            const selectedPatientData = filteredData.filter(
-                (d) => x(d.date) >= selection[0][0] && x(d.date) <= selection[1][0] && y(d.value) >= selection[0][1] && y(d.value) <= selection[1][1]
-            );
+          // console.log(selection);
+          const selectedPatientData = filteredData.filter(
+            (d) => x(d.date) >= selection[0][0] && x(d.date) <= selection[1][0] && y(d.value) >= selection[0][1] && y(d.value) <= selection[1][1]
+          );
 
-            // Log the selected data points to the console
-            // console.log(selectedData);
-            onPatientChange(selectedPatientData);
+          // Log the selected data points to the console
+          // console.log(selectedData);
+          onPatientChange(selectedPatientData);
 
-            // You can do further processing with the selectedData if needed
+          // You can do further processing with the selectedData if needed
         }
-    }
+      }
     });
   }, [range, selectedTask, selectedState]);
 

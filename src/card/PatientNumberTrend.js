@@ -29,13 +29,13 @@ const PatientNumberTrend = ({onTaskChange}) => {
           color: '#333333', // Set the text color
         }}
       >
-        <h2 style={{ marginBottom: '10px', color: '#333333' }}>
+        <h2 style={{ marginLeft: '30px', marginTop: '30px', marginBottom: '10px', color: '#333333' }}>
           Patient number trend
         </h2>
         <div
-          style={{ flexDirection: 'row' }}>
+          style={{ marginLeft: '30px',flexDirection: 'row' }}>
           <b>Number of patients over time for different tasks       </b>
-          <Tooltip title="The stacked chart shows cumulative people for different tasks over time, while the lower line graph displays patient inflow, outflow, and cumulative numbers for a task. Click on colors in the stacked chart to filter the corresponding line chart. Use the time selector at the bottom to choose the display time range." trigger="click" defaultOpen>
+          <Tooltip title="The stacked chart shows cumulative people for different tasks over time, while the lower line graph displays patient inflow, outflow, and cumulative numbers for a task. Click on colors in the stacked chart to filter the corresponding line chart. Use the time selector at the bottom to choose the display time range." placement="right" trigger="click" defaultOpen>
             <QuestionCircleTwoTone />
           </Tooltip>
         </div>

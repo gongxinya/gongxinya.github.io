@@ -1,23 +1,23 @@
-import React, { useEffect, useRef,useContext } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { RangeContext } from '../GlobalContext';
 import * as d3 from 'd3';
 import rawData from '../data/ClinicianState.csv';
 
-const SVG_WIDTH = 280;
-const SVG_HEIGHT = 130;
-const margin = { top: 40, right: 30, bottom: 30, left: 50 };
-const width = 280 - margin.left - margin.right;
+const SVG_WIDTH = 340;
+const SVG_HEIGHT = 120;
+const margin = { top: 40, right: 120, bottom: 30, left: 50 };
+const width = 320 - margin.left - margin.right;
 const height = 120 - margin.top - margin.bottom;
 
 
-const HeatmapChart = ({time}) => {
+const HeatmapChart = ({ time }) => {
     const svgRef = useRef(null);
     const range = useContext(RangeContext);
 
     useEffect(() => {
         // Remove the existing SVG element
         d3.select(svgRef.current).select('svg').remove();
-    
+
         // append the svg object to the body of the page
         const svg = d3
             .select(svgRef.current)
@@ -26,14 +26,14 @@ const HeatmapChart = ({time}) => {
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
-    
+
         // Read the data
         d3.csv(rawData).then(rawData => {
-            const data = rawData.filter((d) => d.current_tick == time );
+            const data = rawData.filter((d) => d.current_tick == time);
             // Labels of row and columns -> unique identifier of the column called 'location' and 'id'
             const myGroups = d3.map(rawData, d => d.location).keys();
             const myVars = d3.map(rawData, d => d.id).keys();
-    
+
             // Build X scales and axis:
             const x = d3
                 .scaleBand()
@@ -47,7 +47,7 @@ const HeatmapChart = ({time}) => {
                 .call(d3.axisBottom(x).tickSize(0))
                 .select(".domain")
                 .remove();
-    
+
             // Build Y scales and axis:
             const y = d3
                 .scaleBand()
@@ -60,15 +60,15 @@ const HeatmapChart = ({time}) => {
                 .call(d3.axisLeft(y).tickSize(0))
                 .select(".domain")
                 .remove();
-    
+
             // Build color scale
             const myColor = d3
-            .scaleOrdinal()
-            .domain(["empty/clean", "occupied", "waiting", "empty/dirty"])
-            .range(["#42A5F5", "#FF5252", "#FFEB3B", "#ECEFF1"]);
-          
+                .scaleOrdinal()
+                .domain(["False", "True"])
+                .range(["#42A5F5", "#FF5252"]);
 
-    
+
+
             // create a tooltip
             const tooltip = d3
                 .select(svgRef.current)
@@ -80,7 +80,7 @@ const HeatmapChart = ({time}) => {
                 .style("border-width", "2px")
                 .style("border-radius", "5px")
                 .style("padding", "5px");
-    
+
             // create a text element for displaying the tooltip
             const text = svg.append("text")
                 .attr("class", "tooltip-text")
@@ -89,7 +89,7 @@ const HeatmapChart = ({time}) => {
                 .attr("y", 0)
                 .attr("dy", "-1.2em")
                 .style("text-anchor", "start");
-    
+
             // Three functions that change the tooltip when the user hovers/moves/leaves a cell
             const mouseover = function (d) {
                 tooltip.style("opacity", 1);
@@ -97,9 +97,12 @@ const HeatmapChart = ({time}) => {
                     .style("stroke", "black")
                     .style("opacity", 1);
             };
-            const mousemove = function(event, d) {
+            const mousemove = function (event, d) {
+                
                 const dataObj = d3.select(this).data()[0];
-                const tooltipText = `State: ${dataObj.state}\nPatient: ${dataObj.patient_id}`;
+                const jsonStr = dataObj.assigned_patients.replace(/'/g, '"');
+                const assignedPatients = JSON.parse(jsonStr)[0].join(', ');
+                const tooltipText = `State: ${dataObj.state}\nPatient: ${assignedPatients}`;
                 const [mouseX, mouseY] = [event.pageX, event.pageY];
                 text
                     .text(tooltipText)
@@ -107,14 +110,14 @@ const HeatmapChart = ({time}) => {
                     .attr("y", mouseY)
                     .style("opacity", 1);
             };
-            
+
             const mouseleave = function (d) {
                 text.style("opacity", 0);
                 d3.select(this)
                     .style("stroke", "none")
                     .style("opacity", 0.8);
             };
-    
+
             // Add the squares
             svg
                 .selectAll("rect")
@@ -127,7 +130,7 @@ const HeatmapChart = ({time}) => {
                 .attr("ry", 4)
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
-                .style("fill", d => myColor(d.state))
+                .style("fill", d => myColor(d.occupied))
                 .style("stroke-width", 4)
                 .style("stroke", "none")
                 .style("opacity", 0.8)
@@ -135,23 +138,15 @@ const HeatmapChart = ({time}) => {
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave);
 
-                // Add the title
-        svg.append('text')
-        .attr('x', width - 140)
-        .attr('y', -30)
-        .text("Current tick: " + time)
-        .style('font-size', '14px')
-        .style('font-family', 'Arial, sans-serif') // Set the font family
-        .style('font-weight', 'bold')
-        .style('fill', '#333') // Set the font color
-        .attr('alignment-baseline', 'middle');
         });
     }, [time]);
-    
+
 
     return (
         <div>
-            <h3>Clinician Allocation</h3>
+            <h3 >
+                Clinician Allocation <span style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'lighter' }}>(Current tick: {time})</span>
+            </h3>
             <svg width={SVG_WIDTH} height={SVG_HEIGHT} ref={svgRef}></svg>
         </div>
     );
