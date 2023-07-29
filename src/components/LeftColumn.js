@@ -35,6 +35,7 @@ const LeftColumn = ({ handleCheckboxChange }) => {
           name="sankey"
           style={{ fontSize: '18px', fontFamily: 'Arial, sans-serif' }} // Set the font family and size
           onChange={(e) => handleCheckboxChange('sankey', e.target.checked)}
+          defaultChecked // Set this to true to make the checkbox checked by default
         >
           Patient Flow View
         </Checkbox>

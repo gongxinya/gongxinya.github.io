@@ -102,7 +102,7 @@ const HeatmapChart = ({ time }) => {
                 const dataObj = d3.select(this).data()[0];
                 const jsonStr = dataObj.assigned_patients.replace(/'/g, '"');
                 const assignedPatients = JSON.parse(jsonStr)[0].join(', ');
-                const tooltipText = `State: ${dataObj.state}\nPatient: ${assignedPatients}`;
+                const tooltipText = `${dataObj.state}\nPatient: ${assignedPatients}`;
                 const [mouseX, mouseY] = [event.pageX, event.pageY];
                 text
                     .text(tooltipText)

@@ -42,7 +42,6 @@ const PatientDataTable = ({ data }) => {
             sorter: (a, b) => a.id.localeCompare(b.id), // Add sorter for this column
           },
         ]
-
       );
   }, [selectedState]);
   // Define columns for the Ant Design Table

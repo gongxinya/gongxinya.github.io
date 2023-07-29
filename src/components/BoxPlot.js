@@ -157,7 +157,7 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("x", width / 2 - 20)
                 .attr("y", yScale(min))
                 .attr("text-anchor", "middle")
-                .text("min")
+                .text("Min")
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 
@@ -165,7 +165,7 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("x", width / 2 - 20)
                 .attr("y", yScale(max))
                 .attr("text-anchor", "middle")
-                .text("max")
+                .text("Max")
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 
@@ -184,7 +184,7 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("x", width / 2 - width / 8 - 20)
                 .attr("y", yScale(firstQuartile))
                 .attr("text-anchor", "middle")
-                .text("q1")
+                .text("Q1")
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 
@@ -192,7 +192,7 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("x", width / 2 - width / 8 - 20)
                 .attr("y", yScale(thirdQuartile))
                 .attr("text-anchor", "middle")
-                .text("q3")
+                .text("Q3")
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 
@@ -208,7 +208,7 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("x", width / 2 - width / 8 - 40)
                 .attr("y", yScale(median))
                 .attr("text-anchor", "middle")
-                .text("median")
+                .text("Median")
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 

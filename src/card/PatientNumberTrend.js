@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { TaskNameContext } from '../GlobalContext';
 import { Tooltip } from 'antd';
 import { QuestionCircleTwoTone } from '@ant-design/icons';
-import '../css/style.css';
 
 import StackedArea from '../components/StackedArea';
 import LineChart from '../components/LineChart';
@@ -34,8 +33,8 @@ const PatientNumberTrend = ({onTaskChange}) => {
         </h2>
         <div
           style={{ marginLeft: '30px',flexDirection: 'row' }}>
-          <b>Number of patients over time for different tasks       </b>
-          <Tooltip title="The stacked chart shows cumulative people for different tasks over time, while the lower line graph displays patient inflow, outflow, and cumulative numbers for a task. Click on colors in the stacked chart to filter the corresponding line chart. Use the time selector at the bottom to choose the display time range." placement="right" trigger="click" defaultOpen>
+          <b>Number of patients over time for different tasks</b>
+          <Tooltip title="The stacked chart shows cumulative people for different tasks over time, while the lower line graph displays patient inflow, outflow, and cumulative numbers for a task. Click on colors in the stacked chart to filter the corresponding line chart. Use the time selector at the bottom to choose the display time range." placement="right" trigger="click" defaultClose>
             <QuestionCircleTwoTone />
           </Tooltip>
         </div>

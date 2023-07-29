@@ -69,6 +69,9 @@ const SankeyDiagram = () => {
   // Update linkData based on the startTick and endTick
   useEffect(() => {
     setStartTick(range[0]);
+    if(!isPlaying) {
+      setEndTick(range[1]);
+    }
     if (!isPlaying || tickIndex > range[1]) {
       setTickIndex(range[0])
     } else if (tickIndex < range[0]) {

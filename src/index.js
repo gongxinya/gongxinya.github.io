@@ -19,9 +19,8 @@ import { RangeContext, TaskNameContext } from './GlobalContext';
 import LeftColumn from './components/LeftColumn';
 import DraggableCard from './DraggableCard';
 import RangeSliderComponent from './components/RangeSlider';
-import Sankey from "./components/Sankey";
-import StackedArea from "./components/StackedArea";
-import LineChart from "./components/LineChart";
+import JumpingArrow from './components/JumpingIcon'; // Adjust the import path as needed
+
 
 
 import PatientFlow from './card/PatientFlow';
@@ -42,9 +41,9 @@ const App = () => {
   const [selectedTask, setSelectedTask] = useState("Treatment"); // Initial task name
 
   const [showHeatmap, setShowHeatmap] = useState(false);
-  const [showSankey, setShowSankey] = useState(false);
+  const [showSankey, setShowSankey] = useState(true);
   const [showTimeSpent, setShowTimeSpent] = useState(false);
-  const [showPatientTrend, setShowPatientTrend] = useState(true);
+  const [showPatientTrend, setShowPatientTrend] = useState(false);
   const [showSlider, setShowSlider] = useState();
   const rangeSliderRef = useRef(null);
 
@@ -166,7 +165,11 @@ const App = () => {
           onClick={toggleSlider}
           style={{ position: 'fixed', bottom: 0, left: 0, width: '100px', height: '100px', background: '#95d09b', cursor: 'pointer' }}
         >
-          <img src={SliderIcon} alt="Slider Icon" style={{ width: '100%', height: '100%' }} />
+          <div>
+      {/* Other components and content */}
+      <JumpingArrow />
+      {/* More components and content */}
+    </div>
         </div>
 
     </div>

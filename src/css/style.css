@@ -40,3 +40,17 @@ h1, p {
   z-index: 1; /* Add a z-index to ensure the sidebar stays on top of other elements */
   overflow-y: auto; /* Add overflow-y to enable scrolling if the content is longer than the sidebar */
 }
+
+/* styles.css (or any other CSS file) */
+@keyframes jumpingArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.jumping-arrow {
+  animation: jumpingArrow 1s infinite;
+}

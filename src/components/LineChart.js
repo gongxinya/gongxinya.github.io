@@ -297,7 +297,7 @@ const LineChart = () => {
         <div>
             <div>
                 <Checkbox.Group options={plainOptions} defaultValue={['Inflow', 'Outflow', 'Current']} onChange={onChange} style={{ marginLeft: '100px' }} />
-                <Tooltip title="Select the lines you want to display" placement='right' trigger="click" defaultOpen>
+                <Tooltip title="Select the lines you want to display" placement='right' trigger="click" defaultClose>
                     <QuestionCircleTwoTone />
                 </Tooltip>
             </div>
