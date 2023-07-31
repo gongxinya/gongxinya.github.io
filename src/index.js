@@ -147,7 +147,7 @@ const App = () => {
               <div
                 style={{
                   backgroundColor: '#ffffff00',
-                  padding: '20px',
+                  padding: '0px',
                   borderRadius: '5px',
                   boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                 }}

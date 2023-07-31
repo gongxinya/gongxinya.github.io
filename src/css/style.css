@@ -7,8 +7,8 @@ h1, p {
 .rangeSliderContainer {
   position: fixed;
   bottom: 0;
-  left: 220;
-  transform: translateX(-40%) translateY(60%);
+  left: 280;
+  transform: translateX(-52%) translateY(50%);
   background-color: #ffffff00;
   padding: 20px;
   border-radius: 5px;
@@ -19,7 +19,7 @@ h1, p {
 
 /* Add the 'open' class to slide the drawer in */
 .rangeSliderContainer.open {
-  transform: translateX(-50%) translateY(15%);
+  transform: translateX(-57%) translateY(15%);
 }
 
 
@@ -35,7 +35,6 @@ h1, p {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: start;
   align-items: flex-start;
   z-index: 1; /* Add a z-index to ensure the sidebar stays on top of other elements */
   overflow-y: auto; /* Add overflow-y to enable scrolling if the content is longer than the sidebar */

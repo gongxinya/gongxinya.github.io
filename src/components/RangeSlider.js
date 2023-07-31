@@ -2,20 +2,21 @@ import React, { useEffect, useContext, useRef, useState } from "react";
 import { RangeContext } from '../GlobalContext';
 import RangeSlider from "data-driven-range-slider";
 import tickData from "../data/tick_data.json";
-import taskTransferCountsData from "../data/task_transfer_counts.json";
 import { QuestionCircleTwoTone } from '@ant-design/icons';
-import { Row, Col, Tooltip } from 'antd';
+import { Row, Col, Tooltip, InputNumber, Space } from 'antd'; // Import InputNumber and Space
 import { debounce } from 'lodash';
 
+const rangeMin = Math.min(...tickData);
+const rangeMax = Math.max(...tickData);
+
 const RangeSliderComponent = ({ onRangeChange }) => {
-  const [selectedRange, setSelectedRange] = useState([]);
-  const [selectedData, setSelectedData] = useState([]);
   const range = useContext(RangeContext);
   const nodeRef = useRef(null);
+  const [startTime, setStartTime] = useState(range.length ? range[0] : 0);
+  const [endTime, setEndTime] = useState(range.length ? range[1] : 100);
 
   // Use the debounce function to create a debounced version of onRangeChange
   const debouncedOnRangeChange = useRef(debounce(onRangeChange, 500)).current;
-
 
   useEffect(() => {
     createDiagram();
@@ -23,9 +24,7 @@ const RangeSliderComponent = ({ onRangeChange }) => {
 
   const createDiagram = () => {
     const node = nodeRef.current;
-    const countsData = taskTransferCountsData;
     const newData = tickData;
-
     if (!newData) {
       return;
     }
@@ -41,13 +40,13 @@ const RangeSliderComponent = ({ onRangeChange }) => {
       .svgWidth(window.innerWidth - 150)
       .svgHeight(80)
       .data(newData)
-
       .onBrush((d) => {
         localStorage.setItem("selectedRange", JSON.stringify(d.range));
-        setSelectedRange(d.range);
-        setSelectedData(d.data);
         // Instead of directly calling onRangeChange, use the debounced version
         debouncedOnRangeChange(d.range);
+        setStartTime(~~d.range[0]);
+        setEndTime(~~d.range[1]);
+
       })
       .render();
 
@@ -63,6 +62,18 @@ const RangeSliderComponent = ({ onRangeChange }) => {
     document.documentElement.scrollTop = document.documentElement.clientHeight;
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
   }, []);
+
+  const handleStartTimeChange = (e) => {
+    setStartTime(e);
+    // Convert the string input to a number and update the selected range
+    debouncedOnRangeChange([+e, endTime]);
+  };
+
+  const handleEndTimeChange = (e) => {
+    setEndTime(e);
+    // Convert the string input to a number and update the selected range
+    debouncedOnRangeChange([startTime, +e]);
+  };
 
   return (
     <div>
@@ -83,23 +94,33 @@ const RangeSliderComponent = ({ onRangeChange }) => {
           </Tooltip>
         </Col>
       </Row>
+      <Row style={{ margin: '10px' }}>
+        <Col>
+          <span>Start Time: </span>
+          <Space>
+            <InputNumber min={rangeMin} max={rangeMax} value={startTime} onChange={handleStartTimeChange} />
+          </Space>
+        </Col>
+        <Col>
+          <span>End Time: </span>
+          <Space>
+            <InputNumber min={rangeMin} max={rangeMax} value={endTime} onChange={handleEndTimeChange} />
+          </Space>
+        </Col>
+      </Row>
 
       {/* <div>Selected data length: {selectedData.length} </div> */}
       <div
         style={{
           marginTop: '10px',
           borderRadius: '5px',
-          paddingTop: '20px',
-          paddingLeft: '20px',
+          paddingTop: '10px',
           backgroundColor: '#ffffff00', // Update the background color here
         }}
         ref={nodeRef}
       />
     </div>
   );
-
-
-
 };
 
 export default RangeSliderComponent;

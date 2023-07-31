@@ -91,7 +91,8 @@ const SankeyDiagram = () => {
       const svg = d3.select(diagramRef.current);
 
       const layout = sankey()
-        .linkValue((d) => Math.round(d.value) || 1)
+        // .linkValue((d) => Math.round(d.value) || 1)
+        .linkValue((d) => Math.round(d.value))
         .nodeWidth(30)
         .extent([[100, 80], [1200, 480]]);
 

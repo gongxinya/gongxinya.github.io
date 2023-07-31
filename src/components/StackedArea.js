@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { RangeContext, TaskNameContext } from '../GlobalContext';
 import * as d3 from 'd3';
 import rawData from '../data/task_count.csv';
-import { QuestionCircleFilled } from '@ant-design/icons';
 
 
 const SVG_WIDTH = 1500;
@@ -22,6 +21,7 @@ const StackedAreaChart = ({ onTaskChange }) => {
 
     const range = useContext(RangeContext);
     const [selectedAreaIndex, setSelectedAreaIndex] = useState(null);
+    const [selectedColors, setSelectedColors] = useState(["Admission", "Assign", "Diagnose", "Discharge", "Recovery", "Transfer", "Treatment"]);
 
 
 
@@ -108,11 +108,14 @@ const StackedAreaChart = ({ onTaskChange }) => {
                     d3.rgb(173, 152, 215),
                 ]);
 
+
             // Stack the data
-            const stackedData = d3.stack().keys(keys)(filteredData);
+            const stackedData = d3.stack().keys(selectedColors)(filteredData);
 
             // Show the areas
             const areas = chart.selectAll('.area').data(stackedData);
+
+
 
             areas
                 .enter()
@@ -120,9 +123,10 @@ const StackedAreaChart = ({ onTaskChange }) => {
                 .attr('class', 'area')
                 .merge(areas)
                 // .style('fill', (d, i) => (selectedAreaIndex !== null && selectedAreaIndex === i ? 'rgba(255, 255, 0, 1)' : color(d.key)))
-                .style('fill', (d, i) => (selectedAreaIndex !== null && selectedAreaIndex !== i
-                    ? `rgba(${color(d.key).r}, ${color(d.key).g}, ${color(d.key).b}, 0.2)`
-                    : color(d.key)))
+                .style('fill', (d, i) => (
+                    selectedAreaIndex !== null && selectedAreaIndex !== i
+                        ? `rgba(${color(d.key).r}, ${color(d.key).g}, ${color(d.key).b}, 0.2)`
+                        : color(d.key)))
 
                 .attr('d', d3.area().x((d, i) => x(d.data.current_tick)).y0((d) => y(d[0])).y1((d) => y(d[1])))
                 .on('mouseover', function (d, i) {
@@ -134,7 +138,6 @@ const StackedAreaChart = ({ onTaskChange }) => {
                     setSelectedAreaIndex(null);
                 })
                 .on('click', (d) => {
-                    // console.log(d.key);
                     onTaskChange(d.key);
                 });
 
@@ -186,8 +189,8 @@ const StackedAreaChart = ({ onTaskChange }) => {
                 // Calculate the corresponding x-axis value based on the constrained position
                 const xValue = x.invert(constrainedX);
 
-               
-     
+
+
                 // Update the position and visibility of the vertical line
                 verticalLine
                     .attr('x1', constrainedX)
@@ -223,36 +226,65 @@ const StackedAreaChart = ({ onTaskChange }) => {
             let legendItems = legend.selectAll('.legend-item').data(keys);
 
             // Append new legend items
-            const legendItemsEnter = legendItems.enter().append('g').attr('class', 'legend-item').attr('transform', (_, i) => `translate(0, ${i * 20})`);
+            const legendItemsEnter = legendItems
+                .enter()
+                .append('g')
+                .attr('class', 'legend-item')
+                .attr('transform', (_, i) => `translate(0, ${i * 20})`)
+                .on('click', (_, i) => {
+                    const colorKey = keys[i];
+                    setSelectedColors(prevColors => {
+                        if (prevColors.includes(colorKey)) {
+                            return prevColors.filter((color) => color !== colorKey);
+                        } else {
+                            return [...prevColors, colorKey];
+                        }
+                    });
+                }); // Add onClick event handler
 
+            // Initialize an object to store the state of each color
+            const colorState = {};
+
+            // Your existing code for appending the color blocks
             legendItemsEnter
                 .append('rect')
-                .attr('width', 10)
-                .attr('height', 10)
-                .attr('fill', color); // Use the color scale for the legend
+                .attr('width', 15)
+                .attr('height', 15)
+                .attr('fill', (d, i) => color(d))
+                .on('click', function (event, d) {
+                    console.log("dd: " + d)
+                    // Toggle the transparency state for the clicked color
+                    colorState[d] = !colorState[d];
 
-            legendItemsEnter.append('text').attr('x', 25).attr('y', 10).text((d) => d);
+                    // Update the fill color based on the new state
+                    if (colorState[d]) {
+                        const transparentColor = color(keys[d]);
+                        const transparentColorRGB = d3.rgb(transparentColor);
+                        d3.select(this).attr('fill', `rgba(${transparentColorRGB.r}, ${transparentColorRGB.g}, ${transparentColorRGB.b}, 0.5)`);
+                    } else {
+                        d3.select(this).attr('fill', color(keys[d]));
+                    }
+                });
+
+
+            legendItemsEnter.append('text').attr('x', 25).attr('y', 12).text((d) => d);
 
             // Merge enter and update selections
             legendItems = legendItemsEnter.merge(legendItems);
-
-
-
         };
 
         // Load and parse the CSV data
         d3.csv(rawData).then((data) => {
             renderStackedDiagram(data);
         });
-    }, [range, selectedAreaIndex]);
+
+
+    }, [range, selectedAreaIndex, selectedColors]);
 
 
     return (
         <div>
-
             <svg width={SVG_WIDTH} height={SVG_HEIGHT} ref={chartRef}>
-
-
                 <g className="chart" transform={`translate(${margin.left},${margin.top})`}>
                     <g className="x-axis" transform={`translate(0,${height})`} />
                     <g className="y-axis" />

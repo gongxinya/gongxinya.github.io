@@ -46,12 +46,19 @@ const ResourceOccupationCard = () => {
                 Resource usage view
             </h2>
             <p>A dynamic heat map illustrates the current occupancy levels of all hospital resources. Each unit is visually depicted by a small square. Mouse over the box to see the status of the corresponding cell and patient assignment</p>
+            <div
+            style = {{
+                flexDirection: 'row',
+            }}
+            >
+                <b>Tick: </b>
             <Space>
                 <InputNumber min={rangeMin} max={rangeMax} value={value} onChange={setValue} />
             </Space>
-            <Tooltip title="Setting up to view resource allocation at a specific point in time. (Make sure you enter a number within the time range you have selected)" trigger="click" defaultOpen>
+            <Tooltip title="Setting up to view resource allocation at a specific point in time. (Make sure you enter a number within the time range you have selected)" placement="right" trigger="click" defaultOpen>
                   <QuestionCircleTwoTone />
                 </Tooltip>
+                </div>
             <div
                 style={{
                     backgroundColor: '#FFFFFF',
