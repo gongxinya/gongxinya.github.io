@@ -45,7 +45,7 @@ const ResourceOccupationCard = () => {
             <h2 style={{ marginBottom: '20px', color: '#333333' }}>
                 Resource usage view
             </h2>
-            <p>A dynamic heat map illustrates the current occupancy levels of all hospital resources. Each unit is visually depicted by a small square. Mouse over the box to see the status of the corresponding cell and patient assignment。 The red squares symbolize resources that have already been allocated to patients, while the blue squares represent those that are yet to be assigned. </p>
+            <p>A dynamic heat map illustrates the current occupancy levels of all hospital resources. Each unit is visually depicted by a small square. Mouse over the box to see the status of the corresponding cell and patient assignment. The red squares symbolize resources that have already been allocated to patients, while the blue squares represent those that are yet to be assigned. </p>
             <p><i>The abbreviations stand for: PICU - Paediatric Intensive Care Unit, HDU - High Dependency Unit, OOF - Out of Office</i></p>
             <div
             style = {{
