@@ -148,9 +148,9 @@ const TaskTimeSpentCard = () => {
                                 }}
                             >
                                 <h2>Selected Patients</h2>
-                                <Link to="/new-page">
+                                {/* <Link to="/new-page">
                                     <Button type="primary">To specific patient view</Button>
-                                </Link>
+                                </Link> */}
                             </div>
                             <PatientDataTable data={selectedPatient} />
                         </div>
