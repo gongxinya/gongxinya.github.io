@@ -19,7 +19,7 @@ h1, p {
 
 /* Add the 'open' class to slide the drawer in */
 .rangeSliderContainer.open {
-  transform: translateX(-57%) translateY(15%);
+  transform: translateX(-57%) translateY(10%);
 }
 
 

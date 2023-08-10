@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useContext, useState } from 'react';
-import { RangeContext, TaskNameContext, StateContext, PatientContext } from '../GlobalContext';
+import { RangeContext, TaskNameContext, StateContext, PatientIdContext } from '../GlobalContext';
 import { Table, Button } from 'antd'; // Import the Table component
 
 
 import * as d3 from 'd3';
 import rawData from '../data/taskState_spent.csv';
-import PatientDataTable from './PatientDataTable';
 
 
 
@@ -25,11 +24,11 @@ const BoxPlot = ({ onPatientChange }) => {
     const range = useContext(RangeContext);
     const selectedTask = useContext(TaskNameContext);
     const selectedSate = useContext(StateContext);
+    const selectedPatientId = useContext(PatientIdContext);
 
 
 
     useEffect(() => {
-        console.log("boxPlot: " + selectedSate);
 
         const svg = d3.select(chartRef.current);
         d3.select(chartRef.current).select('svg').remove();
@@ -212,8 +211,6 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("fill", "#443785")
                 .attr("font-weight", "bold");
 
-
-
             svgContainer.selectAll("circle")
                 .data(filteredDate)
                 .enter()
@@ -230,6 +227,19 @@ const BoxPlot = ({ onPatientChange }) => {
                         return "#44378588"; // Default color for the dots
                     }
                 })
+
+            // Add a highlighted circle around the selectedPatientId
+            svgContainer.selectAll(".highlight-circle")
+                .data(filteredDate.filter(d => d.id === selectedPatientId))
+                .enter()
+                .append("circle")
+                .attr("class", "highlight-circle")
+                .attr("cx", (d) => xScale(d.date))
+                .attr("cy", (d) => yScale(d.value))
+                .attr("r", "8px") // Adjust the radius for the highlight circle
+                .attr("fill", "none")
+                .attr("stroke", "#4169E1") // Color of the stroke
+                .attr("stroke-width", 4); // Width of the stroke
 
 
             svgContainer.selectAll(".aux-line")
@@ -276,10 +286,6 @@ const BoxPlot = ({ onPatientChange }) => {
                 .attr("fill", "#00000088")
                 .attr("font-weight", "bold")
                 .style("font-size", "1rem");
-
-
-
-
 
             const legendData = [
                 { label: "Moderate Time", color: "#44378588" },
@@ -345,7 +351,7 @@ const BoxPlot = ({ onPatientChange }) => {
 
         });
 
-    }, [range, selectedTask, selectedSate]);
+    }, [range, selectedTask, selectedSate, selectedPatientId]);
 
 
 
@@ -365,15 +371,15 @@ const BoxPlot = ({ onPatientChange }) => {
                 {/* Replace container with svg */}
                 <svg className="chart" ref={chartRef}></svg>
             </div>
-            <ul style={{ textAlign: 'left', marginRight: '300px', fontFamily: 'Arial, sans-serif', fontStyle: 'italic',color: '#666666', opacity: '0.8' }}>
-            <li>Max (MaxIQR): The upper bound to identify potential outliers.</li>
-            <li>Q3 (Third Quartile): The 75th percentile of the data.</li>
-            <li>Median: The middle value of the dataset.</li>
-            <li>Q1 (First Quartile): The 25th percentile of the data.</li>
-            
-            <li>Min (MinIQR): The lower bound to identify potential outliers.</li>
-            
-        </ul>
+            <ul style={{ textAlign: 'left', marginRight: '300px', fontFamily: 'Arial, sans-serif', fontStyle: 'italic', color: '#666666', opacity: '0.8' }}>
+                <li>Max (MaxIQR): The upper bound to identify potential outliers.</li>
+                <li>Q3 (Third Quartile): The 75th percentile of the data.</li>
+                <li>Median: The middle value of the dataset.</li>
+                <li>Q1 (First Quartile): The 25th percentile of the data.</li>
+
+                <li>Min (MinIQR): The lower bound to identify potential outliers.</li>
+
+            </ul>
         </div>
     );
 

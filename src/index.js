@@ -1,23 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
-import { HashRouter as Router } from 'react-router-dom';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+
 
 
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
-import { QuestionCircleTwoTone } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
 import './css/style.css';
 import './css/sankey.css'; // Import the CSS file
-import SliderIcon from './icon/slider.png'
 
 
-import { RangeContext, TaskNameContext } from './GlobalContext';
+
+import { RangeContext, TaskNameContext, PatientIdContext } from './GlobalContext';
 
 import LeftColumn from './components/LeftColumn';
-import DraggableCard from './DraggableCard';
 import RangeSliderComponent from './components/RangeSlider';
 import JumpingArrow from './components/JumpingIcon'; // Adjust the import path as needed
 
@@ -27,7 +21,8 @@ import PatientFlow from './card/PatientFlow';
 import PatientNumberTrend from './card/PatientNumberTrend';
 import ResourceOccupationCard from './card/ResourceOccupation';
 import TaskTimeSpentCard from './card/TaskTimeSpent';
-import * as d3 from 'd3';
+
+
 
 import dateData from './data/tick_data.json';
 
@@ -39,6 +34,7 @@ const minValue = Math.min(...dateData);
 const App = () => {
   const [range, setRange] = useState([minValue, maxValue]); // Initial range value
   const [selectedTask, setSelectedTask] = useState("Treatment"); // Initial task name
+  const [selectedPatientId, setSelectedPatientId] = useState("");
 
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [showSankey, setShowSankey] = useState(true);
@@ -57,6 +53,10 @@ const App = () => {
   // Update the range whenever the slider value changes
   const handleTaskChange = (newValue) => {
     setSelectedTask(newValue);
+  };
+
+  const handlePatientTdChange = (newValue) => {
+    setSelectedPatientId(newValue);
   };
 
 
@@ -88,6 +88,7 @@ const App = () => {
   return (
     <RangeContext.Provider value={range}>
     <TaskNameContext.Provider value={selectedTask}>
+    <PatientIdContext.Provider value={selectedPatientId}>
     <div
     style={{
       paddingTop: '40px', // Add some space above the main title
@@ -140,7 +141,7 @@ const App = () => {
             {showSankey && (<PatientFlow/>)}
             {showHeatmap && (<ResourceOccupationCard />)}
             {showPatientTrend && (<PatientNumberTrend onTaskChange={handleTaskChange}/>)}
-            {showTimeSpent && <TaskTimeSpentCard />}
+            {showTimeSpent && <TaskTimeSpentCard onPatientIdChange={handlePatientTdChange}/>}
 
             {/* Use the ref and conditionally render the RangeSliderComponent */}
             <div className={`rangeSliderContainer ${showSlider ? 'open' : ''}`} ref={rangeSliderRef}>
@@ -173,8 +174,10 @@ const App = () => {
         </div>
 
     </div>
+    </PatientIdContext.Provider>
     </TaskNameContext.Provider>
     </RangeContext.Provider>
+
   );
 };
 

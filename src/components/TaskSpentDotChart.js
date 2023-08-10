@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import { RangeContext, TaskNameContext, StateContext } from '../GlobalContext';
+import { RangeContext, TaskNameContext, StateContext, PatientIdContext } from '../GlobalContext';
 import * as d3 from 'd3';
 import rawData from '../data/taskState_spent.csv';
 
@@ -15,6 +15,7 @@ const MyGraph = ({ onPatientChange }) => {
   const range = useContext(RangeContext);
   const selectedTask = useContext(TaskNameContext);
   const selectedState = useContext(StateContext);
+  const selectedPatientId = useContext(PatientIdContext);
 
   useEffect(() => {
     // Remove the existing SVG element
@@ -54,10 +55,6 @@ const MyGraph = ({ onPatientChange }) => {
       const thirdQuartile = d3.quantile(sortedData, 0.75);
       const interQuartileRange = thirdQuartile - firstQuartile;
       const maxIQR = thirdQuartile + interQuartileRange * 1.5;
-
-      console.log("firstQuartile: " + firstQuartile);
-      console.log("thirdQuartile: " + thirdQuartile);
-      console.log("maxIQR: " + maxIQR);
 
 
       // Add X axis
@@ -109,14 +106,7 @@ const MyGraph = ({ onPatientChange }) => {
         .attr('offset', (d) => d.offset)
         .attr('stop-color', (d) => d.color);
 
-      // // Add the line
-      // svg
-      //   .append('path')
-      //   .datum(filteredData)
-      //   .attr('fill', 'none')
-      //   .attr('stroke', 'url(#line-gradient)')
-      //   .attr('stroke-width', 2)
-      //   .attr('d', d3.line().x((d) => x(d.date)).y((d) => y(d.value)));
+
 
       // Add the points
       svg
@@ -137,7 +127,6 @@ const MyGraph = ({ onPatientChange }) => {
           }
         })
         .on('mouseover', (event, d) => {
-          console.log(d.value)
           tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip
             .html(d.value)
@@ -147,6 +136,20 @@ const MyGraph = ({ onPatientChange }) => {
         .on('mouseout', () => {
           tooltip.transition().duration(200).style('opacity', 0);
         });
+
+      // Add a highlighted circle around the selectedPatientId
+      svg.selectAll(".highlight-circle")
+        .data(filteredData.filter(d => d.id === selectedPatientId))
+        .enter()
+        .append("circle")
+        .attr("class", "highlight-circle")
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.value))
+        .attr("r", pointRadius + 2) // Adjust the radius for the highlight circle
+        .attr("fill", "none")
+        .attr("stroke", "#4169E1") // Color of the stroke
+        .attr("stroke-width", 4); // Width of the stroke
+
 
       // Add the title
       svg
@@ -191,7 +194,7 @@ const MyGraph = ({ onPatientChange }) => {
         }
       }
     });
-  }, [range, selectedTask, selectedState]);
+  }, [range, selectedTask, selectedState, selectedPatientId ]);
 
   return <svg width={SVG_WIDTH} height={SVG_HEIGHT} ref={graphRef}></svg>;
 };

@@ -9,10 +9,11 @@ import { TaskNameContext, StateContext } from '../GlobalContext';
 import TaskSpentDotChart from '../components/TaskSpentDotChart';
 import Boxplot from '../components/BoxPlot';
 import PatientDataTable from '../components/PatientDataTable';
+import SpecificPatient from '../components/SpecificPatient';
 
 
 
-const TaskTimeSpentCard = () => {
+const TaskTimeSpentCard = ({onPatientIdChange}) => {
     const initialSelectedTask = useContext(TaskNameContext)
 
     const [selectedTask, setSelectedTask] = useState(initialSelectedTask); // Initial task name
@@ -33,6 +34,10 @@ const TaskTimeSpentCard = () => {
         setSelectedTask(value);
         console.log("task: " + selectedTask);
     };
+
+    const handlePatientIdChange = (newValue) => {
+        onPatientIdChange(newValue)
+      };
 
     const handleStateChange = (value) => {
         setSelectedState(value);
@@ -55,6 +60,9 @@ const TaskTimeSpentCard = () => {
 
 
     return (
+        <TaskNameContext.Provider value={selectedTask}>
+             <StateContext.Provider value={selectedState}>
+
         <div
             style={{
                 backgroundColor: '#FFFFFF',
@@ -69,7 +77,7 @@ const TaskTimeSpentCard = () => {
             <h2>Patient time spent distribution</h2>
             <p>The scatterplot and boxplot display patients' time spent (y-axis) at different times (x-axis). Drag the mouse to box out areas, select patient groups, and view their information in a table.</p>
 
-            <TaskNameContext.Provider value={selectedTask}>
+            
 
                 {/* Add the Ant Design Select dropdown here */}
                 <div
@@ -122,7 +130,7 @@ const TaskTimeSpentCard = () => {
                     </Button>
                     </Tooltip>
                 </div>
-                <StateContext.Provider value={selectedState}>
+               
 
                     {/* Conditionally render the TaskSpentDotChart */}
                     {isChartVisible && <TaskSpentDotChart onPatientChange={handlePatientChange} />}
@@ -152,17 +160,15 @@ const TaskTimeSpentCard = () => {
                                     <Button type="primary">To specific patient view</Button>
                                 </Link> */}
                             </div>
-                            <PatientDataTable data={selectedPatient} />
+                            <PatientDataTable data={selectedPatient} onPatientIdChange={handlePatientIdChange} />
                         </div>
 
                     </div>
-
-
-                </StateContext.Provider>
-
-            </TaskNameContext.Provider>
+                    <SpecificPatient/>
         </div>
-
+       
+        </StateContext.Provider>
+        </TaskNameContext.Provider>
     );
 };
 

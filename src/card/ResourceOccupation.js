@@ -13,8 +13,6 @@ import NurseOccupationRate from '../components/NurseOccupationRate';
 
 
 
-
-
 const ResourceOccupationCard = () => {
     const range = useContext(RangeContext);
     const [value, setValue] = useState(~~range[1]);

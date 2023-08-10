@@ -66,8 +66,8 @@ const HeatmapChart = ({ time }) => {
             // Build color scale
             const myColor = d3
                 .scaleOrdinal()
-                .domain(["False", "True"])
-                .range(["#42A5F5", "#FF5252"]);
+                .domain(["empty/clean", "occupied", "empty/dirty", "waiting"])
+                .range(["#42A5F5", "#FF5252", "#998237", "#fccd5d"]);
 
 
 
@@ -129,7 +129,7 @@ const HeatmapChart = ({ time }) => {
                 .attr("ry", 4)
                 .attr("width", x.bandwidth())
                 .attr("height", y.bandwidth())
-                .style("fill", d => myColor(d.occupied))
+                .style("fill", d => myColor(d.state))
                 .style("stroke-width", 4)
                 .style("stroke", "none")
                 .style("opacity", 0.8)
